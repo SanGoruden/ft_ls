@@ -2,44 +2,43 @@
 
 t_file_list *create_file_list(const char *path, uint8_t flags);
 
-
-uint8_t set_flags(t_lexer_list **args)
+uint8_t set_flags(t_lexer_list *args)
 {
+    if (!args)
+        return 0;
+
     uint8_t flags = 0;
 
-    while (*args)
+    while (args && args->type == OPTION)
     {
-        if ((*args)->type == OPTION)
-        {
-            int i = 1;
-            char option;
+        int i = 1;
+        char option;
 
-            while((option = (*args)->value[i]))
+        while((option = args->value[i]))
+        {
+            switch (option)
             {
-                switch (option)
-                {
-                case 'R':
-                    flags |= RECURSIVE;
-                    break;
-                case 'r':
-                    flags |= REVERSE;
-                    break;
-                case 't':
-                    flags |= TIME;
-                    break;
-                case 'l':
-                    flags |= LONGLIST;
-                    break;
-                case 'a':
-                    flags |= ALL;
-                    break;
-                default:
-                    break;
-                }
-                i++;
+            case 'R':
+                flags |= RECURSIVE;
+                break;
+            case 'r':
+                flags |= REVERSE;
+                break;
+            case 't':
+                flags |= TIME;
+                break;
+            case 'l':
+                flags |= LONGLIST;
+                break;
+            case 'a':
+                flags |= ALL;
+                break;
+            default:
+                break;
             }
+            i++;
         }
-        *args = (*args)->next;
+    args = args->next;
     }
     return flags;
 }
@@ -103,7 +102,7 @@ t_file_list *create_file_list(const char *path, uint8_t flags)
     if ((dir = opendir(path)) == 0)
     {
         perror(path);
-        exit(1);
+        return NULL;
     }
 
     while ((dp = readdir(dir)) != 0)
@@ -118,13 +117,36 @@ t_file_list *create_file_list(const char *path, uint8_t flags)
     return file_list;
 }
 
+void list_files(t_lexer_list *lexed_args, uint8_t flags)
+{
+    char *path;
+
+    while (lexed_args && lexed_args->type == OPTION)
+        lexed_args = lexed_args->next;
+    if (!lexed_args)
+    { //TODO: MAKE THIS CLEANER ITS UGLY
+        path = ".";
+        t_file_list* file_list = create_file_list(path, flags);
+        if (flags & RECURSIVE)
+            check_for_directories(file_list, path, flags);
+        clear_file_list(&file_list);
+    }
+    while (lexed_args)
+    {   
+        path = lexed_args->value;         
+        t_file_list* file_list = create_file_list(path, flags);
+        if (flags & RECURSIVE)
+            check_for_directories(file_list, path, flags);
+        clear_file_list(&file_list);
+        lexed_args = lexed_args->next;
+    }
+}
+
 int main(int argc, char **argv)
 {
     t_lexer_list *lexed_args = create_lexer_list(argc, argv);
-    uint8_t flags = set_flags(&lexed_args);
-    t_file_list* file_list = create_file_list(".", flags);
-    if (flags & RECURSIVE)
-        check_for_directories(file_list, ".", flags);
-    clear_file_list(&file_list);
+    uint8_t flags = set_flags(lexed_args);
+    list_files(lexed_args, flags);
+    clear_lexer_list(&lexed_args);
     return 0;
 }
