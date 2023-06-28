@@ -1,6 +1,6 @@
 #include "parsing.h"
 
-void create_file_list(const char *path, uint8_t flags);
+t_file_list *create_file_list(const char *path, uint8_t flags);
 
 
 uint8_t set_flags(t_lexer_list **args)
@@ -47,6 +47,7 @@ uint8_t set_flags(t_lexer_list **args)
 int is_directory(char *path)
 {
     struct stat file_stats;
+    
     if (stat(path, &file_stats) == -1)
     {
         perror(path);
@@ -72,31 +73,26 @@ void check_for_directories(t_file_list *file_list, const char *path, uint8_t fla
 {
     char *new_path;
 
-    t_file_list *temp = file_list;
-
     while (file_list)
     {
         new_path = get_new_path(path, file_list->file->d_name);
 
-        printf("NEW:  PATH: %s FILENAME: %s\n", path, file_list->file->d_name);
-        print_file_list(temp, path, flags);
-        printf("======================================================================\n");
-
         if (is_directory(new_path))
         {
-            // printf("NEW_PATH: %s\n", new_path);
-            create_file_list(new_path, flags);
+            t_file_list *sub_file_list = create_file_list(new_path, flags);
+            if (sub_file_list != NULL)
+            {
+                check_for_directories(sub_file_list, new_path, flags);
+                clear_file_list(&sub_file_list);
+            }
         }
+
         free(new_path);
         file_list = file_list->next;
-        if (file_list == NULL)
-            printf("RATIO\n");
-        temp = file_list;
     }
-    printf("RATIO2\n");
 }
 
-void create_file_list(const char *path, uint8_t flags)
+t_file_list *create_file_list(const char *path, uint8_t flags)
 {
     DIR *dir;
     struct dirent *dp;
@@ -107,33 +103,28 @@ void create_file_list(const char *path, uint8_t flags)
     if ((dir = opendir(path)) == 0)
     {
         perror(path);
-        return ;
+        exit(1);
     }
 
     while ((dp = readdir(dir)) != 0)
     {
         if (dp->d_name[0] != '.')
-        {
-            // printf("FILENAME: %s\n", dp->d_name);
             add_file_list(&file_list, dp);
-        }
     }
 
     closedir(dir);
     sort_file_list(file_list, flags);
-    // print_file_list(file_list, path, flags);
-    if (flags & RECURSIVE)
-    {
-        printf("\nNEWFILELISTTTTTTTTTTTT\n");
-        check_for_directories(file_list, path, flags);
-    }
-    clear_file_list(&file_list);
+    print_file_list(file_list, path, flags);
+    return file_list;
 }
 
 int main(int argc, char **argv)
 {
     t_lexer_list *lexed_args = create_lexer_list(argc, argv);
     uint8_t flags = set_flags(&lexed_args);
-    create_file_list(".", flags);
+    t_file_list* file_list = create_file_list(".", flags);
+    if (flags & RECURSIVE)
+        check_for_directories(file_list, ".", flags);
+    clear_file_list(&file_list);
     return 0;
 }

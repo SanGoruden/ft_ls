@@ -3,12 +3,20 @@
 t_file_list *new_file_list(struct dirent *file)
 {
     t_file_list *new = malloc(sizeof(t_file_list));
-    if (new == 0)
+    if (new == NULL)
     {
         perror("malloc");
         exit(1);
     }
-    new->file = file;
+    new->file = malloc(sizeof(struct dirent));
+    if (new->file == NULL)
+    {
+        perror("malloc");
+        free(new);
+        exit(1);
+    }
+
+    memcpy(new->file, file, sizeof(struct dirent));
     new->next = NULL;
     return new;
 }

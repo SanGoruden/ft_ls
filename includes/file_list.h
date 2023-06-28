@@ -25,6 +25,7 @@ enum e_flags
 };
 
 t_file_list	*new_file_list(struct dirent *file);
+t_file_list *copy_file_list(t_file_list* file_list);
 void		add_file_list(t_file_list **file_list, struct dirent *file);
 void		clear_file_list(t_file_list **file_list);
 void		print_file_list(t_file_list *file_list, const char *path, uint8_t flags);
