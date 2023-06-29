@@ -52,20 +52,7 @@ int is_directory(char *path)
         perror(path);
         exit(1);
     }
-    return !S_ISREG(file_stats.st_mode);
-}
-
-char *get_new_path(const char *path, char *filename)
-{
-    char *temp;
-    char *new_path;
-
-    temp = ft_strjoin(path, "/");
-    new_path = ft_strjoin(temp, filename);
-    free(temp);
-
-
-    return new_path;
+    return S_ISDIR(file_stats.st_mode);
 }
 
 void check_for_directories(t_file_list *file_list, const char *path, uint8_t flags)
@@ -74,6 +61,12 @@ void check_for_directories(t_file_list *file_list, const char *path, uint8_t fla
 
     while (file_list)
     {
+        if (!ft_strcmp(file_list->file->d_name, ".") || !ft_strcmp(file_list->file->d_name, ".."))
+        {
+            file_list = file_list->next;
+            continue;
+        }
+
         new_path = get_new_path(path, file_list->file->d_name);
 
         if (is_directory(new_path))
@@ -107,14 +100,22 @@ t_file_list *create_file_list(const char *path, uint8_t flags)
 
     while ((dp = readdir(dir)) != 0)
     {
-        if (dp->d_name[0] != '.')
-            add_file_list(&file_list, dp);
+        if (flags & ALL || dp->d_name[0] != '.')
+            add_file_list(&file_list, dp, get_new_path(path, dp->d_name));
     }
 
     closedir(dir);
-    sort_file_list(file_list, flags);
+    sort_file_list(&file_list, flags);
     print_file_list(file_list, path, flags);
     return file_list;
+}
+
+void create_and_explore_file_list(char *path, uint8_t flags)
+{
+    t_file_list* file_list = create_file_list(path, flags);
+    if (flags & RECURSIVE)
+        check_for_directories(file_list, path, flags);
+    clear_file_list(&file_list);
 }
 
 void list_files(t_lexer_list *lexed_args, uint8_t flags)
@@ -124,20 +125,11 @@ void list_files(t_lexer_list *lexed_args, uint8_t flags)
     while (lexed_args && lexed_args->type == OPTION)
         lexed_args = lexed_args->next;
     if (!lexed_args)
-    { //TODO: MAKE THIS CLEANER ITS UGLY
-        path = ".";
-        t_file_list* file_list = create_file_list(path, flags);
-        if (flags & RECURSIVE)
-            check_for_directories(file_list, path, flags);
-        clear_file_list(&file_list);
-    }
+        create_and_explore_file_list(".", flags);
     while (lexed_args)
     {   
         path = lexed_args->value;         
-        t_file_list* file_list = create_file_list(path, flags);
-        if (flags & RECURSIVE)
-            check_for_directories(file_list, path, flags);
-        clear_file_list(&file_list);
+        create_and_explore_file_list(path, flags);
         lexed_args = lexed_args->next;
     }
 }

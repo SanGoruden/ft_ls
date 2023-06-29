@@ -7,11 +7,13 @@
 # include <errno.h>
 # include <sys/types.h>
 # include <sys/stat.h>
+# include <time.h>
 # include "../libft/libft.h"
 
 typedef struct s_file_list
 {
     struct dirent		*file;
+    const char          *path;
     struct s_file_list	*next;
 }				t_file_list;
 
@@ -24,11 +26,14 @@ enum e_flags
     TIME = 1 << 4
 };
 
-t_file_list	*new_file_list(struct dirent *file);
+t_file_list	*new_file_list(struct dirent *file, const char *path);
 t_file_list *copy_file_list(t_file_list* file_list);
-void		add_file_list(t_file_list **file_list, struct dirent *file);
+void		add_file_list(t_file_list **file_list, struct dirent *file, const char *path);
 void		clear_file_list(t_file_list **file_list);
 void		print_file_list(t_file_list *file_list, const char *path, uint8_t flags);
-void        sort_file_list(t_file_list *file_list, uint8_t flags);
+void        sort_file_list(t_file_list **file_list, uint8_t flags);
+char        *get_new_path(const char *path, char *filename);
+
+
 
 #endif // FILE_LIST_H
