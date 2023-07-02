@@ -47,7 +47,7 @@ int is_directory(char *path)
 {
     struct stat file_stats;
     
-    if (stat(path, &file_stats) == -1)
+    if (lstat(path, &file_stats) == -1)
     {
         perror(path);
         exit(1);

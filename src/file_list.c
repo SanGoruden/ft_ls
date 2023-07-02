@@ -64,31 +64,59 @@ void clear_file_list(t_file_list **file_list)
     }
 }
 
+void print_file_stats(t_file_list *file)
+{
+    struct stat file_stats;
+    char test[11] = "----------";
+
+    if (lstat(file->path, &file_stats) == -1)
+    {
+        perror("stat");
+        exit(1);
+    }
+
+    //TODO: this is just for testing how st_mode works
+    mode_t file_mode = file_stats.st_mode;
+    test[1] = file_mode & S_IRUSR ? 'r' : '-';
+    test[2] = file_mode & S_IWUSR ? 'w' : '-';
+    test[3] = file_mode & S_IXUSR ? 'x' : '-';
+    test[4] = file_mode & S_IRGRP ? 'r' : '-';
+    test[5] = file_mode & S_IWGRP ? 'w' : '-';
+    test[6] = file_mode & S_IXGRP ? 'x' : '-';
+    test[7] = file_mode & S_IROTH ? 'r' : '-';
+    test[8] = file_mode & S_IWOTH ? 'w' : '-';
+    test[9] = file_mode & S_IXOTH ? 'x' : '-';
+
+    printf("%s ", test);
+    return ;
+}
+
 void print_file_list(t_file_list *file_list, const char *path, uint8_t flags)
 {
     if (flags & RECURSIVE)
         printf("\n%s:\n", path);
     while (file_list)
     {
+        if (flags & LONGLIST)
+            print_file_stats(file_list);
         printf("%s\n", file_list->file->d_name);
         file_list = file_list->next;
     }
 }
 
-double compare_files(t_file_list *file1, t_file_list *file2, uint8_t flags)
+int compare_files(t_file_list *file1, t_file_list *file2, uint8_t flags)
 {
     if (flags & TIME)
     {
         struct stat file1_stats;
         struct stat file2_stats;
 
-        if (stat(file1->path, &file1_stats) == -1 || stat(file2->path, &file2_stats) == -1)
+        if (lstat(file1->path, &file1_stats) == -1 || lstat(file2->path, &file2_stats) == -1)
         {
             perror("stat");
             exit(1);
         }
-        //TODO: make this work
-        return difftime(file1_stats.st_mtimespec.tv_sec, file2_stats.st_mtimespec.tv_sec);
+        return file1_stats.st_mtime < file2_stats.st_mtime ? 1 : -1;
     }
     else
         return ft_strcmp(file1->file->d_name, file2->file->d_name);
@@ -99,6 +127,7 @@ t_file_list* partition(t_file_list *first, t_file_list *last, uint8_t flags)
     t_file_list*    pivot = first;
     t_file_list*    front = first;
     struct dirent   *temp = 0;
+    const char      *temp_path = 0;
 
     while (front != NULL && front != last) 
     {
@@ -107,8 +136,11 @@ t_file_list* partition(t_file_list *first, t_file_list *last, uint8_t flags)
             pivot = first;
   
             temp = first->file;
+            temp_path = first->path;
             first->file = front->file;
+            first->path = front->path;
             front->file = temp;
+            front->path = temp_path;
   
             first = first->next;
         }
@@ -117,8 +149,11 @@ t_file_list* partition(t_file_list *first, t_file_list *last, uint8_t flags)
     }
   
     temp = first->file;
+    temp_path = first->path;
     first->file = last->file;
+    first->path = last->path;
     last->file = temp;
+    last->path = temp_path;
     return pivot;
 }
 
