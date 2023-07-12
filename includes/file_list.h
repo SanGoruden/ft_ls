@@ -6,6 +6,8 @@
 # include <string.h>
 # include <errno.h>
 # include <sys/types.h>
+# include <pwd.h>
+# include <grp.h>
 # include <sys/stat.h>
 # include <time.h>
 # include "../libft/libft.h"
