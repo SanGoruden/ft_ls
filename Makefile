@@ -2,7 +2,9 @@ NAME	=	ft_ls
 
 SRCS	=	main.c \
 			src/file_list.c \
-			src/parsing.c
+			src/parsing.c \
+			src/printing.c \
+			src/listing.c
 
 OBJS	=	$(SRCS:.c=.o)
 

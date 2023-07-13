@@ -12,7 +12,6 @@ int is_option(char *arg)
         && arg[i] != 'r'
         && arg[i] != 't')
         {
-            //TODO: exit cleanly
             printf("%c: illegal option\n", arg[i]);
             exit(1);
         }
@@ -61,15 +60,6 @@ void clear_lexer_list(t_lexer_list **lexer_list)
         tmp = (*lexer_list)->next;
         free(*lexer_list);
         *lexer_list = tmp;
-    }
-}
-
-void print_lexer_list(t_lexer_list *lexer_list)
-{
-    while (lexer_list)
-    {
-        printf("%s : %d\n", lexer_list->value, lexer_list->type);
-        lexer_list = lexer_list->next;
     }
 }
 
