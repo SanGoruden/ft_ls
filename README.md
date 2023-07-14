@@ -2,7 +2,7 @@
 
 ## overview
 
-This is a project from my school, 42. The goal is to recreate ls with the options -a -l -R -r and -t.
+This is a project from my school, [42](https://42.fr/en/homepage/). The goal is to recreate ls with the options -a -l -R -r and -t.
 
 For this project I was allowed to use this limited set of functions :
 - write
@@ -25,6 +25,8 @@ For this project I was allowed to use this limited set of functions :
 - exit
 
 Every other function had to be coded from scratch, so I imported 2 of the early 42 projects: ft_printf and libft.
+
+**(these projects were coded following the 42 norm)**
 
 ## the program
 
