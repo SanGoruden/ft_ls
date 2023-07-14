@@ -58,7 +58,7 @@ void print_file_mode(struct stat file_stats)
     mode_t file_mode = file_stats.st_mode;
     get_type_and_permission(infos, file_mode);
 
-    printf("%s ", infos);
+    ft_printf("%s ", infos);
     return ;
 }
 
@@ -67,9 +67,9 @@ void print_username_or_id(struct stat file_stats)
     struct passwd *user_infos;
 
     if ((user_infos = getpwuid(file_stats.st_uid)) == NULL)
-        printf("%d ", file_stats.st_uid);
+        ft_printf("%d ", file_stats.st_uid);
     else
-        printf("%s ", user_infos->pw_name);
+        ft_printf("%s ", user_infos->pw_name);
 }
 
 void print_groupname_or_id(struct stat file_stats)
@@ -77,9 +77,9 @@ void print_groupname_or_id(struct stat file_stats)
     struct group *group_infos;
 
     if ((group_infos = getgrgid(file_stats.st_gid)) == NULL)
-        printf("%d ", file_stats.st_gid);
+        ft_printf("%d ", file_stats.st_gid);
     else
-        printf("%s ", group_infos->gr_name);
+        ft_printf("%s ", group_infos->gr_name);
 }
 
 void print_last_modified_date(struct stat file_stats)
@@ -95,16 +95,16 @@ void print_last_modified_date(struct stat file_stats)
     char *hour_and_minute = ft_substr(time_string[3], 0, 5);
     //~2 630 000 seconds in a month
     if ((now - modified_time) < 2630000 * 6)
-        printf("%2s %2s %5s ", month, day, hour_and_minute);
+        ft_printf("%s %s %s ", month, day, hour_and_minute);
     else
-        printf("%2s %2s %5s ", month, day, year);
+        ft_printf("%s %s %s ", month, day, year);
 }
 
 void print_link_destination(struct stat file_stats, t_file_list *file)
 {
     if (!S_ISLNK(file_stats.st_mode))
     {
-        printf("\n");
+        ft_printf("\n");
         return;
     }
 
@@ -118,7 +118,7 @@ void print_link_destination(struct stat file_stats, t_file_list *file)
 
     size_t size_read = readlink(file->path, buf, 100);
     buf[size_read] = '\0';
-    printf(" -> %s\n", buf);
+    ft_printf(" -> %s\n", buf);
 }
 
 void print_total_blocks(t_file_list *file_list)
@@ -143,13 +143,13 @@ void print_total_blocks(t_file_list *file_list)
 
         file_list = file_list->next;
     }
-    printf("total %lld\n", total_blocks);
+    ft_printf("total %d\n", total_blocks);
 }
 
 void print_file_list(t_file_list *file_list, const char *path, uint8_t flags)
 {
     if (flags & RECURSIVE)
-        printf("\n%s:\n", path);
+        ft_printf("\n%s:\n", path);
     if (flags & LONGLIST)
         print_total_blocks(file_list);
     
@@ -167,17 +167,17 @@ void print_file_list(t_file_list *file_list, const char *path, uint8_t flags)
         if (flags & LONGLIST)
         {
             print_file_mode(file_stats);
-            printf("%2d ", file_stats.st_nlink);
+            ft_printf("%d ", file_stats.st_nlink);
             print_username_or_id(file_stats);
             print_groupname_or_id(file_stats);
-            printf("%6lld ", file_stats.st_size);
+            ft_printf("%d ", file_stats.st_size);
             print_last_modified_date(file_stats);
         }
-        printf("%s", file_list->file->d_name);
+        ft_printf("%s", file_list->file->d_name);
         if (flags & LONGLIST)
             print_link_destination(file_stats, file_list);
         else
-            printf("\n");
+            ft_printf("\n");
         file_list = file_list->next;
     }
 }

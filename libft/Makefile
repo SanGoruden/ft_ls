@@ -33,7 +33,16 @@ SRCS	=		ft_atoi.c \
 					ft_strtrim.c \
 					ft_substr.c \
 					ft_tolower.c \
-					ft_toupper.c
+					ft_toupper.c \
+					ft_putnbr.c \
+					ft_putnbr_u.c \
+					ft_putchar.c \
+					ft_putstr.c \
+					ft_putptr.c \
+					ft_printf.c \
+					ft_putnbr_hexl.c \
+					ft_putnbr_hexu.c \
+					nbr_len.c
 
 SRCS_B = 	ft_lstnew.c \
 					ft_lstadd_front.c \
