@@ -36,4 +36,4 @@ To compile ft_ls just run
 
 Then to execute it just run
 
-`./ft_ls [-larRrt] [args]`
+`./ft_ls [-laRrt] [args]`
