@@ -28,7 +28,7 @@ t_file_list *new_file_list(struct dirent *file, const char *path)
         exit(1);
     }
 
-    memcpy(new->file, file, sizeof(struct dirent));
+    ft_memcpy(new->file, file, sizeof(struct dirent));
     new->path = path;
     new->next = NULL;
     return new;
