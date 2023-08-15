@@ -17,9 +17,10 @@ enum e_type
 };
 
 int             is_option(char *arg);
-t_lexer_list    *new_lexer_list(char *arg);
+size_t          lexer_list_len(t_lexer_list *lexer_list);
 void            add_lexer_list(t_lexer_list **lexer_list, char *arg);
 void            clear_lexer_list(t_lexer_list **lexer_list);
+t_lexer_list    *new_lexer_list(char *arg);
 t_lexer_list    *create_lexer_list(int argc, char **argv);
 
 #endif

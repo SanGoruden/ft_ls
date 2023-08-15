@@ -5,7 +5,8 @@ char *get_new_path(const char *path, char *filename)
     char *temp;
     char *new_path;
 
-    temp = ft_strjoin(path, "/");
+    if (ft_strcmp(path, "/"))
+        temp = ft_strjoin(path, "/");
     new_path = ft_strjoin(temp, filename);
     free(temp);
 
@@ -27,8 +28,10 @@ t_file_list *new_file_list(struct dirent *file, const char *path)
         free(new);
         exit(1);
     }
-
-    ft_memcpy(new->file, file, sizeof(struct dirent));
+    if (file)
+        ft_memcpy(new->file, file, sizeof(struct dirent));
+    else
+        new->file = NULL;
     new->path = path;
     new->next = NULL;
     return new;
@@ -57,7 +60,8 @@ void clear_file_list(t_file_list **file_list)
     while (*file_list)
     {
         tmp = (*file_list)->next;
-        free((*file_list)->file);
+        if ((*file_list)->file)
+            free((*file_list)->file);
         free((char *)(*file_list)->path);
         free(*file_list);
         *file_list = tmp;

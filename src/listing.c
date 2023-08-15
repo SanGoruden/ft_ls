@@ -43,26 +43,38 @@ void check_for_directories(t_file_list *file_list, const char *path, uint8_t fla
 
 t_file_list *create_file_list(const char *path, uint8_t flags)
 {
-    DIR *dir;
-    struct dirent *dp;
+    struct stat     path_stat;
+    t_file_list     *file_list = NULL;
 
-    t_file_list *file_list = NULL;
+    if(stat(path, &path_stat) == 0)
+    {
+        if (!S_ISDIR(path_stat.st_mode))
+            add_file_list(&file_list, NULL, ft_strdup(path));
+        else if (S_ISDIR(path_stat.st_mode))
+        {
+            DIR             *dir;
+            struct dirent   *dp;
 
-
-    if ((dir = opendir(path)) == 0)
+            if ((dir = opendir(path)) == NULL)
+            {
+                perror(path);
+                return NULL;
+            }
+            while ((dp = readdir(dir)) != NULL)
+            {
+                if (flags & ALL || dp->d_name[0] != '.')
+                    add_file_list(&file_list, dp, get_new_path(path, dp->d_name));
+            }
+            closedir(dir);
+            sort_file_list(&file_list, flags);
+        }
+    }
+    else
     {
         perror(path);
         return NULL;
     }
-
-    while ((dp = readdir(dir)) != 0)
-    {
-        if (flags & ALL || dp->d_name[0] != '.')
-            add_file_list(&file_list, dp, get_new_path(path, dp->d_name));
-    }
-
-    closedir(dir);
-    sort_file_list(&file_list, flags);
+    
     print_file_list(file_list, path, flags);
     return file_list;
 }
@@ -77,14 +89,19 @@ void create_and_explore_file_list(char *path, uint8_t flags)
 
 void list_files(t_lexer_list *lexed_args, uint8_t flags)
 {
-    char *path;
+    char    *path;
+    int     multi_args = 0;
 
     while (lexed_args && lexed_args->type == OPTION)
         lexed_args = lexed_args->next;
     if (!lexed_args)
-        create_and_explore_file_list(".", flags);
+        return create_and_explore_file_list(".", flags);
+    if (lexer_list_len(lexed_args) > 1)
+        multi_args = 1;
     while (lexed_args)
-    {   
+    {
+        if (multi_args && !(flags & RECURSIVE))
+            ft_printf("%s:\n", lexed_args->value);
         path = lexed_args->value;         
         create_and_explore_file_list(path, flags);
         lexed_args = lexed_args->next;

@@ -12,11 +12,23 @@ int is_option(char *arg)
         && arg[i] != 'r'
         && arg[i] != 't')
         {
-            printf("%c: illegal option\n", arg[i]);
+            ft_printf("%c: illegal option\n", arg[i]);
             exit(1);
         }
     }
     return 1;
+}
+
+size_t  lexer_list_len(t_lexer_list *lexer_list)
+{
+    size_t  len = 0;
+
+    while(lexer_list)
+    {
+        lexer_list = lexer_list->next;
+        len++;
+    }
+    return len;
 }
 
 t_lexer_list *lexer_list_last(t_lexer_list *lexer_list)

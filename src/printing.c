@@ -173,7 +173,10 @@ void print_file_list(t_file_list *file_list, const char *path, uint8_t flags)
             ft_printf("%d ", file_stats.st_size);
             print_last_modified_date(file_stats);
         }
-        ft_printf("%s", file_list->file->d_name);
+        if (file_list->file)
+            ft_printf("%s", file_list->file->d_name);
+        else
+            ft_printf("%s", file_list->path);
         if (flags & LONGLIST)
             print_link_destination(file_stats, file_list);
         else
