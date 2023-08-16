@@ -100,7 +100,7 @@ void list_files(t_lexer_list *lexed_args, uint8_t flags)
         multi_args = 1;
     while (lexed_args)
     {
-        if (multi_args && !(flags & RECURSIVE))
+        if (multi_args && !(flags & RECURSIVE) && !(flags & LONGLIST))
             ft_printf("%s:\n", lexed_args->value);
         path = lexed_args->value;         
         create_and_explore_file_list(path, flags);

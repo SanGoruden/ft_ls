@@ -7,6 +7,8 @@ char *get_new_path(const char *path, char *filename)
 
     if (ft_strcmp(path, "/"))
         temp = ft_strjoin(path, "/");
+    else
+        temp = ft_strdup(path);
     new_path = ft_strjoin(temp, filename);
     free(temp);
 
