@@ -33,8 +33,8 @@ t_file_list	*new_file_list(struct dirent *file, const char *path);
 t_file_list *copy_file_list(t_file_list* file_list);
 void		add_file_list(t_file_list **file_list, struct dirent *file, const char *path);
 void		clear_file_list(t_file_list **file_list);
-void		print_file_list(t_file_list *file_list, const char *path, uint8_t flags);
-void        sort_file_list(t_file_list **file_list, uint8_t flags);
+void		print_file_list(t_file_list *file_list, const char *path, u_int8_t flags);
+void        sort_file_list(t_file_list **file_list, u_int8_t flags);
 char        *get_new_path(const char *path, char *filename);
 
 

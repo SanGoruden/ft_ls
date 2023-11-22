@@ -70,7 +70,7 @@ void clear_file_list(t_file_list **file_list)
     }
 }
 
-int compare_files(t_file_list *file1, t_file_list *file2, uint8_t flags)
+int compare_files(t_file_list *file1, t_file_list *file2, u_int8_t flags)
 {
     if (flags & TIME)
     {
@@ -88,7 +88,7 @@ int compare_files(t_file_list *file1, t_file_list *file2, uint8_t flags)
         return ft_strcmp(file1->file->d_name, file2->file->d_name);
 }
 
-t_file_list* partition(t_file_list *first, t_file_list *last, uint8_t flags)
+t_file_list* partition(t_file_list *first, t_file_list *last, u_int8_t flags)
 {
     t_file_list*    pivot = first;
     t_file_list*    front = first;
@@ -123,7 +123,7 @@ t_file_list* partition(t_file_list *first, t_file_list *last, uint8_t flags)
     return pivot;
 }
 
-void quick_sort(t_file_list* first, t_file_list* last, uint8_t flags)
+void quick_sort(t_file_list* first, t_file_list* last, u_int8_t flags)
 {
     if (first == last)
         return;
@@ -154,7 +154,7 @@ void reverse_file_list(t_file_list **file_list)
     *file_list = prev;
 }
 
-void sort_file_list(t_file_list **file_list, uint8_t flags)
+void sort_file_list(t_file_list **file_list, u_int8_t flags)
 {
     quick_sort(*file_list, file_list_last(*file_list), flags);
 

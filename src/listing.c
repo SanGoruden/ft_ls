@@ -12,7 +12,7 @@ int is_directory(char *path)
     return S_ISDIR(file_stats.st_mode);
 }
 
-void check_for_directories(t_file_list *file_list, const char *path, uint8_t flags)
+void check_for_directories(t_file_list *file_list, const char *path, u_int8_t flags)
 {
     char *new_path;
 
@@ -41,7 +41,7 @@ void check_for_directories(t_file_list *file_list, const char *path, uint8_t fla
     }
 }
 
-t_file_list *create_file_list(const char *path, uint8_t flags)
+t_file_list *create_file_list(const char *path, u_int8_t flags)
 {
     struct stat     path_stat;
     t_file_list     *file_list = NULL;
@@ -79,7 +79,7 @@ t_file_list *create_file_list(const char *path, uint8_t flags)
     return file_list;
 }
 
-void create_and_explore_file_list(char *path, uint8_t flags)
+void create_and_explore_file_list(char *path, u_int8_t flags)
 {
     t_file_list* file_list = create_file_list(path, flags);
     if (flags & RECURSIVE)
@@ -87,7 +87,7 @@ void create_and_explore_file_list(char *path, uint8_t flags)
     clear_file_list(&file_list);
 }
 
-void list_files(t_lexer_list *lexed_args, uint8_t flags)
+void list_files(t_lexer_list *lexed_args, u_int8_t flags)
 {
     char    *path;
     int     multi_args = 0;

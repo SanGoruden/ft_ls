@@ -2,12 +2,12 @@
 #include "printing.h"
 #include "listing.h"
 
-uint8_t set_flags(t_lexer_list *args)
+u_int8_t set_flags(t_lexer_list *args)
 {
     if (!args)
         return 0;
 
-    uint8_t flags = 0;
+    u_int8_t flags = 0;
 
     while (args && args->type == OPTION)
     {
@@ -46,7 +46,7 @@ uint8_t set_flags(t_lexer_list *args)
 int main(int argc, char **argv)
 {
     t_lexer_list *lexed_args = create_lexer_list(argc, argv);
-    uint8_t flags = set_flags(lexed_args);
+    u_int8_t flags = set_flags(lexed_args);
     list_files(lexed_args, flags);
     clear_lexer_list(&lexed_args);
     return 0;

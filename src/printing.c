@@ -146,7 +146,7 @@ void print_total_blocks(t_file_list *file_list)
     ft_printf("total %d\n", total_blocks);
 }
 
-void print_file_list(t_file_list *file_list, const char *path, uint8_t flags)
+void print_file_list(t_file_list *file_list, const char *path, u_int8_t flags)
 {
     if (flags & RECURSIVE)
         ft_printf("\n%s:\n", path);
