@@ -1,5 +1,17 @@
 #include "printing.h"
 
+void free_2d(char **tab)
+{
+    int i = 0;
+
+    while (tab[i])
+    {
+        free(tab[i]);
+        i++;
+    }
+    free(tab);
+}
+
 char get_file_type(mode_t file_mode)
 {
     if (S_ISBLK(file_mode))
@@ -98,6 +110,9 @@ void print_last_modified_date(struct stat file_stats)
         ft_printf("%s %s %s ", month, day, hour_and_minute);
     else
         ft_printf("%s %s %s ", month, day, year);
+    free(year);
+    free(hour_and_minute);
+    free_2d(time_string);
 }
 
 void print_link_destination(struct stat file_stats, t_file_list *file)
@@ -119,6 +134,7 @@ void print_link_destination(struct stat file_stats, t_file_list *file)
     size_t size_read = readlink(file->path, buf, 100);
     buf[size_read] = '\0';
     ft_printf(" -> %s\n", buf);
+    free(buf);
 }
 
 void print_total_blocks(t_file_list *file_list)
